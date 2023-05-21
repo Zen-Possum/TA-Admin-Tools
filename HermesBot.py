@@ -71,5 +71,5 @@ if __name__ == '__main__':
     # Iterate through the names provided
     for name in list_of_names:
         send_message(driver, name, message)
-        print(f'Sent message to {name} ({list_of_names. + 1} of {len(list_of_names)})')
+        print(f'Sent message to {name} ({list_of_names.index(name) + 1} of {len(list_of_names)})')
         new_message(driver)
