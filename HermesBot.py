@@ -4,7 +4,7 @@
 # login credentials. Written by ZenPossum :)
 # ======================================================================================================================
 
-from selenium import webdriver
+from selenium import webdriver, common
 import time
 import pandas as pd
 
@@ -38,18 +38,23 @@ def login(driver, username, password):
     return driver
 
 
-def send_message(driver, name, message):
+def send_message(driver, name, message, delay=1):
     # SEND_MESSAGE sends a message to a single user
     address_box = driver.find_elements_by_class_name('form-input-left')
     address_box[1].send_keys(name)
     time.sleep(1)
     driver.find_element_by_class_name('username-search-autocomplete-field').click()
     time.sleep(1)
-    driver.switch_to.frame('mce_0_ifr')  # Switch frames for rich text editor
-    driver.find_element_by_id('tinymce').send_keys(message)
-    driver.switch_to.default_content()  # Switch back
-    driver.find_element_by_id('message-submit').click()
-    time.sleep(1)
+    try:
+        driver.switch_to.frame('mce_0_ifr')  # Switch frames for rich text editor
+        driver.find_element_by_id('tinymce').send_keys(message)
+        driver.switch_to.default_content()  # Switch back
+        driver.find_element_by_id('message-submit').click()
+        print(f'Sent message to {name} ({list_of_names.index(name) + 1} of {len(list_of_names)})')
+        time.sleep(delay)
+    except common.exceptions.ElementNotInteractableException:  # If user is blocked
+        print(f'Unable to message {name} ({list_of_names.index(name) + 1} of {len(list_of_names)}).')
+        blocked_users.append(name)
     return driver
 
 
@@ -62,6 +67,7 @@ def new_message(driver):
 
 if __name__ == '__main__':
     login(driver, username, password)
+    print('Logged in.')
 
     # Wait for page to load before sending messages
     print('Loading message page...')
@@ -69,7 +75,16 @@ if __name__ == '__main__':
         time.sleep(1)
 
     # Iterate through the names provided
+    blocked_users = []
     for name in list_of_names:
-        send_message(driver, name, message)
-        print(f'Sent message to {name} ({list_of_names.index(name) + 1} of {len(list_of_names)})')
+        send_message(driver, name, message, delay=10)
         new_message(driver)
+
+    # Display list of blocked users
+    print('Program finished.')
+    if blocked_users:
+        print('All users messaged except for the following:')
+        for user in blocked_users:
+            print(user)
+    else:
+        print('All users messaged.')
