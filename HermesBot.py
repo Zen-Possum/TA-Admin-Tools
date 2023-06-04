@@ -13,7 +13,7 @@ username = 'USERNAME_HERE'
 password = 'PASSWORD_HERE'
 
 # 2. Input the list of users to send the message to here, either using a CSV with a 'name' column or manually
-file_name = 'FILE_NAME_HERE.csv'
+file_name = 'FILE_NAME_HERE.csv'  # Leave blank with `file_name = None` to use the manual list
 if file_name:
     df = pd.read_csv(file_name)
     list_of_names = list(df['name'])
@@ -38,7 +38,7 @@ def login(driver, username, password):
     return driver
 
 
-def send_message(driver, name, message, delay=1):
+def send_message(driver, name, message, delay=15):
     # SEND_MESSAGE sends a message to a single user
     address_box = driver.find_elements_by_class_name('form-input-left')
     address_box[1].send_keys(name)
@@ -77,7 +77,7 @@ if __name__ == '__main__':
     # Iterate through the names provided
     blocked_users = []
     for name in list_of_names:
-        send_message(driver, name, message, delay=10)
+        send_message(driver, name, message, delay=15)
         new_message(driver)
 
     # Display list of blocked users
