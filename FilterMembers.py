@@ -80,3 +80,7 @@ def filter_timeout_percentage(members, format, above=25, to_csv=False):
         pd.DataFrame(filtered_members.items(), columns=['name', 'timeout_percentage'])\
             .to_csv('filtered_timeout.csv', index=False)
     return filtered_members
+
+
+print(client.get_player_profile('zenpossum').json['player'])
+print(client.get_player_stats('zenpossum').json['stats'])
