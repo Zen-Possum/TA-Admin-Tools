@@ -9,7 +9,7 @@ import profanity_check
 
 # Set the club URL suffix and the rate limit delay here
 club_name = 'team-australia'
-delay = 1
+delay = 0
 recoded = {'Bullet': 'chess_bullet', 'Blitz': 'chess_blitz', 'Rapid': 'chess_rapid',
            'Daily': 'chess_daily', 'Daily960': 'chess960_daily'}
 
@@ -82,5 +82,5 @@ def filter_timeout_percentage(members, format, above=25, to_csv=False):
     return filtered_members
 
 
-print(client.get_player_profile('zenpossum').json['player'])
-print(client.get_player_stats('zenpossum').json['stats'])
+# print(client.get_player_profile('zenpossum').json['player'])
+# print(client.get_player_stats('zenpossum').json['stats'])
