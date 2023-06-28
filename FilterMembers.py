@@ -4,6 +4,7 @@
 # ======================================================================================================================
 
 from chessdotcom import client
+import json
 import pandas as pd
 import profanity_check
 
@@ -12,6 +13,10 @@ club_name = 'team-australia'
 delay = 0
 recoded = {'Bullet': 'chess_bullet', 'Blitz': 'chess_blitz', 'Rapid': 'chess_rapid',
            'Daily': 'chess_daily', 'Daily960': 'chess960_daily'}
+
+
+def pretty_print(dictionary):
+    print(json.dumps(dictionary, indent=2))
 
 
 def get_all_members(club):

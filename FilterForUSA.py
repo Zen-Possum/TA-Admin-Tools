@@ -17,20 +17,25 @@ from FilterMembers import get_all_members
 if __name__ == '__main__':
     # Parameters
     club = 'team-australia'
-    team = 'team1'  # TODO: automatically detect from team @id
-    format = 'chess_daily'
-    # TODO: automatically detect from get_team_match(match_id, tts=delay).json['match']['settings']
     delay = 0
     match_id = 1500903  # Find this at the end of the match URL
     min_rating = 1200
     max_timeout_percent = 25
-    max_days_since_online = 14  # TODO: reported as a bit buggy; change back to 3?
+    max_days_since_online = 14
 
+    # Get the list of club members
     club_members = get_all_members(club)
     N = len(club_members)
-    match_raw = client.get_team_match(match_id, tts=delay).json['match']['teams'][team]['players']
-    # print(client.get_team_match(match_id, tts=delay).json['match'])
-    match = [x['username'] for x in match_raw]
+
+    # Get the match data from the API
+    match_raw = client.get_team_match(match_id, tts=delay).json['match']
+    teams = match_raw['teams']
+    settings = match_raw['settings']
+
+    # Get the team number and format based on the club name and match ID provided
+    team = [t for t in teams.keys() if teams[t]['url'].split('/')[-1] == club][0]
+    format = f'{settings["rules"]}_{settings["time_class"]}'
+    match = [x['username'] for x in teams[team]['players']]
     filtered_members = pd.DataFrame(columns=['username', 'rating', 'timeout_percent', 'days_since_online'])
 
     # Iterate through club members
