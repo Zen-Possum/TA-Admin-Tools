@@ -21,7 +21,8 @@ if __name__ == '__main__':
     N = len(match)
 
     # Create a dataframe to store the undesirable results
-    df = pd.DataFrame(columns=['username', 'board', 'colour', 'result', 'number_of_moves', 'link'])
+    df = pd.DataFrame(columns=['username', 'board', 'colour', 'result', 'opponent', 'number_of_moves', 'link',
+                               'contacted'])
 
     # Iterate through the players in the match
     print(f'Program started . Inspecting {N} members for violations.')
@@ -34,8 +35,9 @@ if __name__ == '__main__':
                 result = player[f'played_as_{colour}']
                 if result == 'timeout' or result == 'resigned':
                     # Get more details about the game
-                    board_games = client.get_team_match_board(match_id, board, tts=delay).json['match_board']['games']
-                    for g in board_games:
+                    board_details = client.get_team_match_board(match_id, board, tts=delay).json['match_board']
+                    opponent = [u for u in board_details['board_scores'].keys() if u != username][0]
+                    for g in board_details['games']:
                         url_given = isinstance(g[colour], str)
                         # Sometimes the white player is given as an API URL instead of a dictionary
                         if url_given:
@@ -45,6 +47,7 @@ if __name__ == '__main__':
                             game = g
                     number_of_moves = int(game['fen'].split()[-1]) # noqa
                     link = game['url']
+
                     resigned_early = (result == 'resigned') and (number_of_moves < 10)
                     if result == 'timeout' or resigned_early:
                         # Add a row to the data frame
@@ -53,8 +56,10 @@ if __name__ == '__main__':
                             'board': [board],
                             'colour': [colour],
                             'result': [result],
+                            'opponent': [opponent],
                             'number_of_moves': [number_of_moves],
-                            'link': [link]
+                            'link': [link],
+                            'contacted': [None]
                         })
                         df = pd.concat([df, df_to_add], ignore_index=True)
             except KeyError:
