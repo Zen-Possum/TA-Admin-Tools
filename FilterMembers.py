@@ -20,10 +20,10 @@ def pretty_print(dictionary):
 
 
 def get_all_members(club):
-    all_members_raw = client.get_club_members(club, tts=delay)
+    all_members_raw = client.get_club_members(club, tts=delay).json['members']
     all_members = []
     for category in ['weekly', 'monthly', 'all_time']:
-        all_members += [x['username'] for x in all_members_raw.json['members'][category]]
+        all_members += [x['username'] for x in all_members_raw[category]]
     return all_members
 
 
