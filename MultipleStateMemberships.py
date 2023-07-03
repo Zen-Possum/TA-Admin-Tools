@@ -33,10 +33,15 @@ for club in all_clubs:
 # Check for duplicates and tabulate them
 counter = Counter(all_members)
 duplicates = [element for element, count in counter.items() if count > 1]
-df = pd.DataFrame(columns=['username', 'clubs'])
+df = pd.DataFrame(columns=['username', 'clubs', 'link', 'contacted'])
 for member in duplicates:
     multiple_clubs = [club[15:] for club in all_clubs if member in members_of[club]]
-    df_to_add = pd.DataFrame({'username': [member], 'clubs': [', '.join(multiple_clubs)]})
+    df_to_add = pd.DataFrame({
+        'username': [member],
+        'clubs': [', '.join(multiple_clubs)],
+        'link': [f'https://www.chess.com/member/{member}'],
+        'contacted': [None]
+    })
     df = pd.concat([df, df_to_add], ignore_index=True)
 
 # Save to CSV file
