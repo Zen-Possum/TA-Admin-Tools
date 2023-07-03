@@ -1,5 +1,5 @@
 # ======================================================================================================================
-# CheckMultipleMemberships.py documents the overlap between Team Australia state club members, ignoring admins.
+# MultipleStateMemberships.py identifies players in multiple Team Australia state/territory clubs, ignoring admins.
 # Written by ZenPossum :)
 # ======================================================================================================================
 
@@ -41,5 +41,5 @@ for member in duplicates:
 
 # Save to CSV file
 df = df.sort_values('username')
-csv_name = f'multiple-memberships-{date.today()}.csv'
+csv_name = f'multiple-state-memberships-{date.today()}.csv'
 df.to_csv(csv_name, index=False)
