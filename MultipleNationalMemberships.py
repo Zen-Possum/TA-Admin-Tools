@@ -1,5 +1,5 @@
 # ======================================================================================================================
-# MultipleStateMemberships.py identifies Team Australia members in other World League clubs.
+# MultipleStateMemberships.py identifies Team Australia members in other World League (WL) clubs.
 # Written by ZenPossum :)
 # ======================================================================================================================
 
@@ -7,40 +7,43 @@ from chessdotcom import client
 import pandas as pd
 from datetime import date
 from FilterMembers import get_all_members
+from selenium import webdriver
+from Credentials import username, password, driver_path
+import time
 
 home_club = 'team-australia'
+url_to_scrape = 'https://www.chess.com/clubs/forum/view/wl2023-teams-and-representatives'
+login_url = f'https://www.chess.com/login_and_go?returnUrl={url_to_scrape}'
 delay = 0
 
-url_to_scrape = 'https://www.chess.com/clubs/forum/view/wl2023-teams-and-representatives'
-international_clubs = []
-# Sign in and scrape URL data for club list
-# ...
-# Remove team-australia
+# Log in to WCL page
+driver = webdriver.Chrome(executable_path=driver_path)
+driver.get(login_url)
+login_boxes = driver.find_elements_by_class_name('login-input')
+login_boxes[0].send_keys(username)
+login_boxes[1].send_keys(password)
+driver.find_element_by_id('login').click()
+time.sleep(3)
 
-au_members = set(get_all_members(home_club))
-n = 1
+# Scrape a list of WL clubs
+link_elements = driver.find_elements_by_xpath('//div/p/a') + \
+                driver.find_elements_by_xpath('//div/p/span/a') + \
+                driver.find_elements_by_xpath('//div/p/span/span/a') + \
+                driver.find_elements_by_xpath('//div/p/span/span/span/a')
+links = [link.get_attribute('href') for link in link_elements]
+international_clubs = set([link.split('/')[-1] for link in links if link.startswith('https://www.chess.com/club/')])
+international_clubs.remove(home_club)
 
-########################################################################################################################
-#
-# for member in au_members:
-#     player_clubs_raw = client.get_player_clubs(member, tts=delay).json['clubs']
-#     player_clubs = [c['url'].split('/')[-1] for c in player_clubs_raw]
-#     if [c for c in player_clubs if c in international_clubs]:
-#         pass
-#     # pretty_print(player_clubs)
-#     print(n)
-#     n += 1
-#
-########################################################################################################################
-
-international_members = set()  # Members of all clubs combined
+# Get lists of members for all clubs of interest
+au_members = set(get_all_members(home_club))  # Members of home club
+international_members = set()  # Members of all other WL clubs combined
 members_of = {}  # Dictionary with members of each club
 for club in international_clubs:
     club_details = client.get_club_details(club, tts=delay).json['club']
     members_of[club] = get_all_members(club)
     international_members.update(members_of[club])
 
-# Check for duplicates and tabulate them
+# Check for overlaps and tabulate them
 duplicates = au_members.intersection(international_members)
 df = pd.DataFrame(columns=['username', 'clubs', 'link', 'contacted'])
 for member in duplicates:
