@@ -18,9 +18,9 @@ if __name__ == '__main__':
     # Parameters
     club = 'team-australia'
     delay = 0
-    match_id = 1500903  # Find this at the end of the match URL
-    min_rating = 1200
-    max_rating = 4000
+    match_id = 1510761  # Find this at the end of the match URL
+    min_rating = 1614
+    max_rating = 1696
     max_timeout_percent = 25
     max_days_since_online = 8
 
@@ -67,4 +67,4 @@ if __name__ == '__main__':
                     filtered_members = pd.concat([filtered_members, df_to_add], ignore_index=True)
         n += 1
     filtered_members = filtered_members.sort_values('rating', ascending=False)
-    filtered_members.to_csv('FilteredMembersUSA.csv', index=False)
+    filtered_members.to_csv('FilteredMembersBH.csv', index=False)
