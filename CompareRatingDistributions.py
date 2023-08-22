@@ -61,7 +61,7 @@ n = xt[0]
 s = ['%.1f' % abs(i) for i in n]
 plt.xticks(n, s)
 plt.legend(loc='best')
-plt.axvline(0.0, color='k')
+plt.axvline(0.0, lw=1, alpha=0.6, color='k')
 plt.title('Rating distributions')
 plt.xlabel('Count')
 plt.ylabel('Rating')
