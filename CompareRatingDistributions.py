@@ -39,6 +39,10 @@ for club, member_list in club_members.items():
             pass
         n += 1
 
+# Print average ratings
+for club in [club1, club2]:
+    print(f'{club} average rating: {round(np.mean(club_ratings[club]))}')
+
 # Plot back-to-back histograms. Adapted from code by Boris Gorelik
 # (https://stackoverflow.com/questions/1340338/back-to-back-histograms-in-matplotlib}
 h0 = plt.hist(club_ratings[club1]+club_ratings[club2], orientation='horizontal', rwidth=0.8, )
