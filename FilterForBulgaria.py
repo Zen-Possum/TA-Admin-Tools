@@ -2,7 +2,7 @@
 # FilterForUSA.py filters Team Australia members to those matching the following criteria:
 #   * Over a specified rating,
 #   * Below 25% timeout percentage,
-#   * Last online in the last 3 days, and
+#   * Last online in the last few days, and
 #   * Not already in a specified team match.
 # It then writes the results to a Google Sheets document and divides the players into folds. Written by ZenPossum :)
 # ======================================================================================================================
@@ -11,21 +11,30 @@ from chessdotcom import client
 import pandas as pd
 import time
 from FilterMembers import get_all_members
+import json
 # import gspread
 # from oauth2client.service_account import ServiceAccountCredentials
 
 if __name__ == '__main__':
     # Parameters
     club = 'team-australia'
-    delay = 0
-    match_id = 1510761  # Find this at the end of the match URL
-    min_rating = 1614
-    max_rating = 1696
+    file_name = 'FilteredMembersBulgaria.csv'
+    delay = 0.2
+    match_id = 1529009  # Find this at the end of the match URL
+    min_rating = 1200
+    max_rating = 4000
     max_timeout_percent = 25
-    max_days_since_online = 8
+    max_days_since_online = 7
 
     # Get the list of club members
-    club_members = get_all_members(club)
+    # club_members = get_all_members(club)
+    ###
+    with open('members.json') as json_file:
+        all_members_raw = json.load(json_file)
+    club_members = []
+    for category in ['weekly', 'monthly', 'all_time']:
+        club_members += [x['username'] for x in all_members_raw[category]]
+    ###
     N = len(club_members)
 
     # Get the match data from the API
@@ -67,4 +76,4 @@ if __name__ == '__main__':
                     filtered_members = pd.concat([filtered_members, df_to_add], ignore_index=True)
         n += 1
     filtered_members = filtered_members.sort_values('rating', ascending=False)
-    filtered_members.to_csv('FilteredMembersBH.csv', index=False)
+    filtered_members.to_csv(file_name, index=False)
