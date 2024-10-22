@@ -16,6 +16,11 @@ url_to_scrape = 'https://www.chess.com/clubs/forum/view/wl2023-teams-and-represe
 login_url = f'https://www.chess.com/login_and_go?returnUrl={url_to_scrape}'
 delay = 0
 
+client.Client.request_config["headers"]["User-Agent"] = (
+    "TeamAustraliaAdminScripts"
+    "Contact me at aidan.cash93@gmail.com"
+)
+
 # Log in to WCL page
 driver = webdriver.Chrome(executable_path=driver_path)
 driver.get(login_url)

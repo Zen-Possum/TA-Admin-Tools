@@ -9,6 +9,11 @@ import pandas as pd
 from datetime import date
 from FilterMembers import get_all_members
 
+client.Client.request_config["headers"]["User-Agent"] = (
+    "TeamAustraliaAdminScripts"
+    "Contact me at aidan.cash93@gmail.com"
+)
+
 all_clubs = [
         'team-australia-adelaide-sa',
         'team-australia-brisbane-qld',
