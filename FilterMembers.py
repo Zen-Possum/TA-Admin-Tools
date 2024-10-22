@@ -14,6 +14,11 @@ delay = 0
 recoded = {'Bullet': 'chess_bullet', 'Blitz': 'chess_blitz', 'Rapid': 'chess_rapid',
            'Daily': 'chess_daily', 'Daily960': 'chess960_daily'}
 
+client.Client.request_config["headers"]["User-Agent"] = (
+    "TeamAustraliaAdminScripts"
+    "Contact me at aidan.cash93@gmail.com"
+)
+
 
 def pretty_print(dictionary):
     print(json.dumps(dictionary, indent=2))
@@ -64,7 +69,7 @@ def find_profanity(members, to_csv=False):
         profile = client.get_player_profile(member, tts=delay)
         profile_fields = profile.json['player']
         for field in ['name', 'username', 'location']:
-            if profanity_check.predict(profile_fields[field]):
+            if profanity_check.predict([profile_fields[field]]):
                 filtered_members[member] = profile_fields[field]
                 break
     if to_csv:
