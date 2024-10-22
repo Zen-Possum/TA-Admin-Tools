@@ -5,70 +5,115 @@
 
 from chessdotcom import client
 import pandas as pd
-from datetime import date
+from HermesBot import *
 
 if __name__ == '__main__':
+    client.Client.request_config["headers"]["User-Agent"] = (
+        "TeamAustraliaAdminScripts"
+        "Contact me at aidan.cash93@gmail.com"
+    )
     club = 'team-australia'
     delay = 0
-    match_id = 1500903  # Find this at the end of the match URL
+    matches_since = 1726315383
+    csv_name = 'match-monitor.csv'
+    archive_1 = True
 
-    # Get the match data from the API
-    teams = client.get_team_match(match_id, tts=delay).json['match']['teams']
+    # Download the matches before `matches_since`
+    all_matches = client.get_club_matches(club, tts=delay).json['matches']['in_progress']
+    match_ids = [m['@id'].split('/')[-1] for m in all_matches if m['start_time'] >= matches_since and m['time_class'] == 'daily']
+    print(f'{len(match_ids)} matches found')
 
-    # Get the team number based on the club name provided
-    team = [t for t in teams.keys() if teams[t]['url'].split('/')[-1] == club][0]
-    match = teams[team]['players']
-    N = len(match)
+    try:
+        # Open previous CSV if it exists
+        df = pd.read_csv(csv_name)
+        print('Previous database loaded from file')
+        if archive_1:
+            df.to_csv('match-monitor-archive.csv', index=False)
+    except FileNotFoundError:
+        # Create a dataframe to store the timeouts and early resignations
+        df = pd.DataFrame(columns=['username',
+                                   'match',
+                                   'board',
+                                   'colour',
+                                   'result',
+                                   'opponent',
+                                   'number_of_moves',
+                                   # 'link',
+                                   'contacted'])
+        print('New database created')
 
-    # Create a dataframe to store the undesirable results
-    df = pd.DataFrame(columns=['username', 'board', 'colour', 'result', 'opponent', 'number_of_moves', 'link',
-                               'contacted'])
+    M = len(match_ids)
+    m = 1  # Counter for match number
+    for match_id in match_ids:
+        # Get the match data from the API
+        match_details = client.get_team_match(match_id, tts=delay).json['match']
+        teams = match_details['teams']
 
-    # Iterate through the players in the match
-    print(f'Program started . Inspecting {N} members for violations.')
-    n = 1
-    for player in match:
-        username = player['username']
-        board = player['board'].split('/')[-1]
-        for colour in ['white', 'black']:
-            try:
-                result = player[f'played_as_{colour}']
-                if result == 'timeout' or result == 'resigned':
-                    # Get more details about the game
-                    board_details = client.get_team_match_board(match_id, board, tts=delay).json['match_board']
-                    opponent = [u for u in board_details['board_scores'].keys() if u != username][0]
-                    for g in board_details['games']:
-                        url_given = isinstance(g[colour], str)
-                        # Sometimes the white player is given as an API URL instead of a dictionary
-                        if url_given:
-                            if g[colour].split('/')[-1] == username:
-                                game = g
-                        elif g[colour]['username'].lower() == username:
-                            game = g
-                    number_of_moves = int(game['fen'].split()[-1]) # noqa
-                    link = game['url']
+        # Skip finished matches (relevant for custom match list only)
+        # if match_details['status'] == 'finished':
+        #     continue
 
-                    resigned_early = (result == 'resigned') and (number_of_moves < 10)
-                    if result == 'timeout' or resigned_early:
-                        # Add a row to the data frame
-                        df_to_add = pd.DataFrame({
-                            'username': [username],
-                            'board': [board],
-                            'colour': [colour],
-                            'result': [result],
-                            'opponent': [opponent],
-                            'number_of_moves': [number_of_moves],
-                            'link': [link],
-                            'contacted': [None]
-                        })
-                        df = pd.concat([df, df_to_add], ignore_index=True)
-            except KeyError:
-                # This is if the games are still ongoing
-                pass
-        n += 1
+        # Get the team number based on the club name provided
+        team = [t for t in teams.keys() if teams[t]['url'].split('/')[-1] == club][0]
+        match = teams[team]['players']
+        N = len(match)
+
+        # Iterate through the players in the match
+        print(f'Beginning match {match_id} ({m} of {M}). Inspecting {N} members for violations.')
+        n = 1  # Counter for player number
+        for player in match:
+            username = player['username']
+            board = player['board'].split('/')[-1]
+            for colour in ['white', 'black']:
+                # Check if (username, match, colour) pair already appears in `df`
+                if not ((df['username'] == username) &
+                        (df['match'] == int(match_id)) &
+                        (df['colour'] == colour)).any():
+                    try:
+                        result = player[f'played_as_{colour}']
+                        if result == 'timeout' or result == 'resigned':
+                            # Get more details about the game
+                            board_details = client.get_team_match_board(match_id, board, tts=delay).json['match_board']
+                            opponent = [u for u in board_details['board_scores'].keys() if u != username][0]
+                            for g in board_details['games']:
+                                url_given = isinstance(g[colour], str)
+                                # Sometimes the white player is given as an API URL instead of a dictionary
+                                if url_given:
+                                    if g[colour].split('/')[-1] == username:
+                                        game = g
+                                elif g[colour]['username'].lower() == username:
+                                    game = g
+                            number_of_moves = int(game['fen'].split()[-1])
+                            # link = game['url']
+
+                            resigned_early = (result == 'resigned') and (number_of_moves < 10)
+                            if result == 'timeout' or resigned_early:
+                                # Add a row to the data frame
+                                df_to_add = pd.DataFrame({
+                                    'username': [username],
+                                    'match': [match_id],
+                                    'board': [board],
+                                    'colour': [colour],
+                                    'result': [result],
+                                    'opponent': [opponent],
+                                    'number_of_moves': [number_of_moves],
+                                    # 'link': [link],
+                                    'contacted': [None]
+                                })
+                                df = pd.concat([df, df_to_add], ignore_index=True)
+                    except KeyError:
+                        # This is if the games are still ongoing
+                        pass
+            n += 1
+        m += 1
 
     # Sort and save the collected data
-    df = df.sort_values('board', ascending=True)
-    csv_name = f'match-{match_id}-{date.today()}.csv'
+    # df = df.sort_values(['match', 'board'], ascending=True)
     df.to_csv(csv_name, index=False)
     print(f'Program finished. Data saved as {csv_name}.')
+
+# TODO: integrate eval to check early resignations
+# TODO: check WL, AL, 1WL only
+# TODO: check for strikes
+# TODO: integrate with google sheets to update rather than just list
+# TODO: integrate with HermesBot.py
