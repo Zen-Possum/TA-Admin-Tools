@@ -5,8 +5,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 # Set up clubs and the format for ratings to compare
-club1 = 'the-nature-lovers-club'
-club2 = 'pawnicide'
+club1 = 'team-australia'
+club2 = 'team-bulgaria'
 format = 'chess_daily'
 
 # Get members of both clubs
