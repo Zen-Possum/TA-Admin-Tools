@@ -3,7 +3,7 @@
 # certain criteria including rating, flag, obscene profiles or timeout percentages. Written by ZenPossum :)
 # ======================================================================================================================
 
-from chessdotcom import client
+from chessdotcom import client, get_club_members, get_player_stats, get_player_profile
 import json
 import pandas as pd
 import profanity_check
@@ -25,7 +25,7 @@ def pretty_print(dictionary):
 
 
 def get_all_members(club):
-    all_members_raw = client.get_club_members(club, tts=delay).json['members']
+    all_members_raw = get_club_members(club, tts=delay).json['members']
     all_members = []
     for category in ['weekly', 'monthly', 'all_time']:
         all_members += [x['username'] for x in all_members_raw[category]]
@@ -38,7 +38,7 @@ def filter_by_rating(members, format, bottom, top, to_csv=False):
     # Formats available: 'Bullet', 'Blitz', 'Rapid', 'Daily', 'Daily960'
     filtered_members = {}
     for member in members:
-        stats = client.get_player_stats(member, tts=delay)
+        stats = get_player_stats(member, tts=delay)
         rating = stats.json['stats'][recoded[format]]['last']['rating']
         if bottom <= rating <= top:
             filtered_members[member] = rating
@@ -52,7 +52,7 @@ def find_non_au_flags(members, to_csv=False):
     # and their current flags. There is also an option to save the results as a CSV file.
     filtered_members = {}
     for member in members:
-        profile = client.get_player_profile(member, tts=delay)
+        profile = get_player_profile(member, tts=delay)
         country_code = profile.json['player']['country'].split('/')[-1]
         if country_code != 'AU':
             filtered_members[member] = country_code
@@ -66,7 +66,7 @@ def find_profanity(members, to_csv=False):
     # username, name or location and the offending text. Currently searching the profile description is unavailable.
     filtered_members = {}
     for member in members:
-        profile = client.get_player_profile(member, tts=delay)
+        profile = get_player_profile(member, tts=delay)
         profile_fields = profile.json['player']
         for field in ['name', 'username', 'location']:
             if profanity_check.predict([profile_fields[field]]):
@@ -82,7 +82,7 @@ def filter_timeout_percentage(members, format, above=25, to_csv=False):
     # larger than the `above` parameter in the specified format ('Daily' or 'Daily960').
     filtered_members = {}
     for member in members:
-        stats = client.get_player_stats(member, tts=delay)
+        stats = get_player_stats(member, tts=delay)
         percentage = stats.json['stats'][recoded[format]]['record']['timeout_percent']
         if percentage >= above:
             filtered_members[member] = percentage
@@ -92,5 +92,5 @@ def filter_timeout_percentage(members, format, above=25, to_csv=False):
     return filtered_members
 
 
-# print(client.get_player_profile('zenpossum').json['player'])
-# print(client.get_player_stats('zenpossum').json['stats'])
+# print(get_player_profile('zenpossum').json['player'])
+# print(get_player_stats('zenpossum').json['stats'])

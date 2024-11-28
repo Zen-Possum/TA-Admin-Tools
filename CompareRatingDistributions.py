@@ -1,12 +1,17 @@
-from chessdotcom import client
+from chessdotcom import client, get_player_stats
 from FilterMembers import get_all_members
 import time
 import numpy as np
 from matplotlib import pyplot as plt
 
+client.Client.request_config["headers"]["User-Agent"] = (
+    "TeamAustraliaAdminScripts"
+    "Contact me at aidan.cash93@gmail.com"
+)
+
 # Set up clubs and the format for ratings to compare
 club1 = 'team-australia'
-club2 = 'team-bulgaria'
+club2 = 'team-iran-1'
 format = 'chess_daily'
 
 # Get members of both clubs
@@ -32,7 +37,7 @@ for club, member_list in club_members.items():
             print(f'Processing member {n} of {N}. Estimated time remaining: {estimated_time_remaining} minutes.')
         try:
             # Get member's rating from API
-            rating = client.get_player_stats(member).json['stats'][format]['last']['rating']
+            rating = get_player_stats(member).json['stats'][format]['last']['rating']
             club_ratings[club].append(rating)
         except KeyError:
             # If they don't have a rating in the format specified

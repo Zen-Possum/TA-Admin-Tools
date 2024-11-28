@@ -3,7 +3,7 @@
 # the chess.com API. Written by ZenPossum :)
 # ======================================================================================================================
 
-from chessdotcom import client
+from chessdotcom import client, get_player_stats, get_player_profile
 import pandas as pd
 import time
 from datetime import date
@@ -15,14 +15,14 @@ from FilterMembers import get_all_members
 if __name__ == '__main__':
     # Parameters
     all_clubs = [
-        'team-australia-adelaide-sa',
-        'team-australia-brisbane-qld',
-        'team-australia-canberra-act',
-        'team-australia-darwin-nt',
-        'team-australia-hobart-tasmania',
-        'team-australia-melbourne-vic',
-        'team-australia-perth-w-a',
-        'team-australia-sydney-nsw',
+        # 'team-australia-adelaide-sa',
+        # 'team-australia-brisbane-qld',
+        # 'team-australia-canberra-act',
+        # 'team-australia-darwin-nt',
+        # 'team-australia-hobart-tasmania',
+        # 'team-australia-melbourne-vic',
+        # 'team-australia-perth-w-a',
+        # 'team-australia-sydney-nsw',
         'team-australia'
     ]
     C = len(all_clubs)
@@ -54,8 +54,8 @@ if __name__ == '__main__':
                       f'{pd.Timedelta(estimated_time_remaining, "min").round(freq="s")}.')
 
             # Query the API for the player's data
-            profile = client.get_player_profile(member, tts=delay).json['player']
-            stats = client.get_player_stats(member, tts=delay).json['stats']
+            profile = get_player_profile(member, tts=delay).json['player']
+            stats = get_player_stats(member, tts=delay).json['stats']
 
             # Extract all data of interest from the player's profile
             df_to_add = pd.DataFrame({'username': [member],
