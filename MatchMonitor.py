@@ -4,6 +4,8 @@
 # ======================================================================================================================
 
 from chessdotcom import client, get_club_matches, get_team_match, get_team_match_board
+import chess
+import chess.engine
 import pandas as pd
 
 # from HermesBot import *
@@ -13,13 +15,22 @@ if __name__ == '__main__':
         "TeamAustraliaAdminScripts"
         "Contact me at aidan.cash93@gmail.com"
     )
+    engine_path = 'C:/Users/aidan/Downloads/stockfish/stockfish-windows-x86-64-avx2.exe'
     club = 'team-australia'
     delay = 0
     matches_since = 1726315383
     csv_name = 'match-monitor.csv'
     archive_1 = True
 
-    # Message to be sent
+    # Function to determine whether a specified colour is lost from a FEN
+    def is_losing(colour, fen):
+        board = chess.Board(fen)
+        with chess.engine.SimpleEngine.popen_uci(engine_path) as engine:
+            result = engine.analyse(board, chess.engine.Limit(time=3.0))
+            evaluation = result['score'].white().score(mate_score=10000)
+            return (evaluation <= -250 and colour == 'white') or (evaluation >= 250 and colour == 'black')
+
+    # Function to write the message to be sent
     def message(match_opponent, offences=0):
         if offences == 0:
             return 'Dear Team Australia member\n\n' \
@@ -131,7 +142,7 @@ if __name__ == '__main__':
                             number_of_moves = int(game['fen'].split()[-1])
                             # link = game['url']
 
-                            resigned_early = (result == 'resigned') and (number_of_moves < 10)
+                            resigned_early = (result == 'resigned') and (number_of_moves < 10) and is_losing(colour, game['fen'])
                             if result == 'timeout' or resigned_early:
                                 # Add a row to the data frame
                                 df_to_add = pd.DataFrame({
@@ -158,7 +169,6 @@ if __name__ == '__main__':
     df.to_csv(csv_name, index=False)
     print(f'Program finished. Data saved as {csv_name}.')
 
-# TODO: integrate eval to check early resignations
 # TODO: check for strikes and keep count
 # TDOO: alert if need to ban someone
 # TODO: integrate with google sheets to update rather than just list
