@@ -7,7 +7,7 @@ from chessdotcom import client, get_club_matches, get_team_match, get_team_match
 import chess
 import chess.engine
 import pandas as pd
-
+from datetime import datetime
 # from HermesBot import *
 
 if __name__ == '__main__':
@@ -92,6 +92,8 @@ if __name__ == '__main__':
                                    'result',
                                    'opponent',
                                    'number_of_moves',
+                                   'date',
+                                   'strike',
                                    # 'link',
                                    'contacted'])
         print('New database created')
@@ -121,7 +123,7 @@ if __name__ == '__main__':
             username = player['username']
             board = player['board'].split('/')[-1]
             for colour in ['white', 'black']:
-                # Check if (username, match, colour) pair already appears in `df`
+                # Check if (username, match, colour) combination already appears in `df`
                 if not ((df['username'] == username) &
                         (df['match'] == int(match_id)) &
                         (df['colour'] == colour)).any():
@@ -142,8 +144,12 @@ if __name__ == '__main__':
                             number_of_moves = int(game['fen'].split()[-1])
                             # link = game['url']
 
-                            resigned_early = (result == 'resigned') and (number_of_moves < 10) and is_losing(colour, game['fen'])
+                            resigned_early = (result == 'resigned') and \
+                                             (number_of_moves < 10) and \
+                                             not is_losing(colour, game['fen'])
                             if result == 'timeout' or resigned_early:
+                                # Determine strike number
+                                strike = df['username'].value_counts().get(username, 0)
                                 # Add a row to the data frame
                                 df_to_add = pd.DataFrame({
                                     'username': [username],
@@ -154,22 +160,29 @@ if __name__ == '__main__':
                                     'result': [result],
                                     'opponent': [opponent],
                                     'number_of_moves': [number_of_moves],
+                                    'date': [datetime.today().strftime('%Y-%m-%d')],
+                                    'strike': [strike],
                                     # 'link': [link],
                                     'contacted': [None]
                                 })
                                 df = pd.concat([df, df_to_add], ignore_index=True)
+
+                                # Write message here
+                                # message = message(match_opponent, strike)
                     except KeyError:
                         # This is if the games are still ongoing
                         pass
             n += 1
         m += 1
 
-    # Sort and save the collected data
+    # Save the collected data
     # df = df.sort_values(['match', 'board'], ascending=True)
     df.to_csv(csv_name, index=False)
     print(f'Program finished. Data saved as {csv_name}.')
 
-# TODO: check for strikes and keep count
-# TDOO: alert if need to ban someone
+# TODO: solve pairwise columns issue for strike count
+# TODO: time bound on strike count (12 months?)
+# TODO: insert existing strike data to start of df
+# TODO: alert if need to ban someone
 # TODO: integrate with google sheets to update rather than just list
 # TODO: integrate with HermesBot.py
