@@ -15,7 +15,7 @@ recoded = {'Bullet': 'chess_bullet', 'Blitz': 'chess_blitz', 'Rapid': 'chess_rap
            'Daily': 'chess_daily', 'Daily960': 'chess960_daily'}
 
 client.Client.request_config["headers"]["User-Agent"] = (
-    "TeamAustraliaAdminScripts"
+    "TeamAustraliaAdminScripts "
     "Contact me at aidan.cash93@gmail.com"
 )
 
