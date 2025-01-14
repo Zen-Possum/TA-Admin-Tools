@@ -9,9 +9,6 @@ import time
 from datetime import date
 from FilterMembers import get_all_members
 
-# TODO: make more efficient so it only gets each player once
-# TODO: make a script that checks if players are in two state clubs
-
 if __name__ == '__main__':
     # Parameters
     all_clubs = [
@@ -27,6 +24,12 @@ if __name__ == '__main__':
     ]
     C = len(all_clubs)
     delay = 0
+
+    # Set up user agent
+    client.Client.request_config["headers"]["User-Agent"] = (
+        "TeamAustraliaAdminScripts "
+        "Contact me at aidan.cash93@gmail.com"
+    )
 
     c = 1
     # Iterate through clubs
@@ -92,3 +95,5 @@ if __name__ == '__main__':
         df.to_csv(csv_name, index=False)
         print(f'Program finished for club "{club}" ({c} of {C}). Database saved as {csv_name}.')
         c += 1
+
+# TODO: make more efficient so it only gets each player once
