@@ -23,9 +23,9 @@ if __name__ == '__main__':
     max_days_since_online = 3
 
     # Set up user agent
-    client.Client.request_config["headers"]["User-Agent"] = (
-        "TeamAustraliaAdminScripts "
-        "Contact me at aidan.cash93@gmail.com"
+    client.Client.request_config['headers']['User-Agent'] = (
+        'TeamAustraliaAdminScripts '
+        'Contact me at aidan.cash93@gmail.com'
     )
 
     # Get the list of club members

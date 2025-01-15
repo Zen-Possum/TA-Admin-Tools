@@ -9,9 +9,10 @@ home_club = 'team-australia'
 file_name = f'offenders-{date.today()}.csv'
 delay = 0
 
-client.Client.request_config["headers"]["User-Agent"] = (
-    "TeamAustraliaAdminScripts"
-    "Contact me at aidan.cash93@gmail.com"
+# Set up user agent
+client.Client.request_config['headers']['User-Agent'] = (
+    'TeamAustraliaAdminScripts '
+    'Contact me at aidan.cash93@gmail.com'
 )
 
 club_members = get_all_members(home_club)

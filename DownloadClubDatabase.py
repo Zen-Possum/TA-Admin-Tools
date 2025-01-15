@@ -26,9 +26,9 @@ if __name__ == '__main__':
     delay = 0
 
     # Set up user agent
-    client.Client.request_config["headers"]["User-Agent"] = (
-        "TeamAustraliaAdminScripts "
-        "Contact me at aidan.cash93@gmail.com"
+    client.Client.request_config['headers']['User-Agent'] = (
+        'TeamAustraliaAdminScripts '
+        'Contact me at aidan.cash93@gmail.com'
     )
 
     c = 1

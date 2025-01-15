@@ -9,11 +9,6 @@ import pandas as pd
 from datetime import date
 from FilterMembers import get_all_members
 
-client.Client.request_config["headers"]["User-Agent"] = (
-    "TeamAustraliaAdminScripts"
-    "Contact me at aidan.cash93@gmail.com"
-)
-
 all_clubs = [
         'team-australia-adelaide-sa',
         'team-australia-brisbane-qld',
@@ -25,6 +20,12 @@ all_clubs = [
         'team-australia-sydney-nsw'
     ]
 delay = 0
+
+# Set up user agent
+client.Client.request_config['headers']['User-Agent'] = (
+    'TeamAustraliaAdminScripts '
+    'Contact me at aidan.cash93@gmail.com'
+)
 
 all_members = []  # Members of all clubs combined
 members_of = {}  # Dictionary with members of each club
