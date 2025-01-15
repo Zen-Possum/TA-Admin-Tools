@@ -1,10 +1,11 @@
 # TA-Admin-Tools
 A collection of Python scripts to assist admins in moderating Team Australia on Chess.com.
 
-**TODO**
-* Expand HermesBot
-  * Implement a GUI
-  * Randomness and variable clearing
-* Integrate with Google Sheets
+## TODO
+* Implement a GUI and add additional security for `HermesBot.py`
+* Integrate CSV saves with Google Sheets
 * Fully automate a match monitor program
-* Clean up and add a header to all programs/functions
+* Add database compatibility with `RuleViolationChecker.py`
+* Add optional requirement to have a daily game in FilterForMatchMessaging
+* Update selenium and chessdotcom syntax in `MultipleNationalMemberships.py` and `MultipleStateMemberships.py`
+* Write `RecruitTopAustralians.py`
