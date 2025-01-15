@@ -3,7 +3,7 @@
 # Written by ZenPossum :)
 # ======================================================================================================================
 
-from chessdotcom import client
+from chessdotcom import client, get_club_details, errors
 from collections import Counter
 import pandas as pd
 from datetime import date
@@ -30,10 +30,17 @@ client.Client.request_config['headers']['User-Agent'] = (
 
 all_members = []  # Members of all clubs combined
 members_of = {}  # Dictionary with members of each club
+print('Member lists:')
 for club in all_clubs:
-    club_details = client.get_club_details(club, tts=delay).json['club']
+    club_details = get_club_details(club, tts=delay).json['club']
     club_admins = [api_url.split('/')[-1] for api_url in club_details['admin']]
-    club_members = get_all_members(club)
+    try:
+        club_members = get_all_members(club)
+        print(f'{club}: public')
+    except errors.ChessDotComClientError:
+        # If club members are private
+        club_members = []
+        print(f'{club}: private')
     members_of[club] = [m for m in club_members if m not in club_admins]
     all_members += members_of[club]
 
