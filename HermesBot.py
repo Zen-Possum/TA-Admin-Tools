@@ -5,31 +5,30 @@
 # ======================================================================================================================
 
 from selenium import common
+from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 import pandas as pd
 from Credentials import username, password
 
 # 1. Create a separate file called Credentials.py and copy the following, replacing the bold text with your login
-# credentials and the path of your Chrome driver.
+# credentials.
 # username = 'USERNAME_HERE'
 # password = 'PASSWORD_HERE'
-# driver_path = r'C:\PATH\TO\chromedriver.exe'
 
 # 2. Input the list of users to send the message to here, either using a CSV with a 'username' column or manually
-file_name = 'FilteredMembers2025.csv'  # 'FILE_NAME_HERE.csv'  # Leave blank with `file_name = None` to use the manual list
+file_name = ''  # 'FILE_NAME_HERE.csv'. Leave as '' or None to use the manual list
 if file_name:
     df = pd.read_csv(file_name)
     list_of_names = list(df['username'])
 else:
-    list_of_names = ['GoogleEnPassnt']
+    list_of_names = []
 N = len(list_of_names)
 
 options = Options()
@@ -44,6 +43,16 @@ def login():
     login_boxes[1].send_keys(username)
     login_boxes[2].send_keys(password)
     driver.find_element(By.ID, 'login').click()
+
+
+def fill_recipient(name):
+    address_box = driver.find_elements(By.CLASS_NAME, 'ui_v5-input-component')
+    address_box[3].clear()
+    address_box[3].send_keys(name)
+    name_popup = WebDriverWait(driver, 10).until(
+        ec.presence_of_element_located((By.CLASS_NAME, 'username-search-autocomplete-field')))
+    name_popup.click()
+    time.sleep(1)
 
 
 def write_plain_text(text):
@@ -66,6 +75,7 @@ def write_italics_text(text):
 
 
 def insert_image(url):
+    # INSERT_IMAGE inserts the image with the given address into the message
     driver.switch_to.default_content()  # Switch back to default frame
     driver.find_element(By.XPATH, '//button[@title="Insert Image"]').click()
     time.sleep(1)
@@ -76,21 +86,13 @@ def insert_image(url):
     driver.find_element(By.CLASS_NAME, 'cc-button-primary').click()
     driver.switch_to.default_content()
     text_input_frame = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.ID, 'mce_0_ifr')))
+        ec.presence_of_element_located((By.ID, 'mce_0_ifr')))
     driver.switch_to.frame(text_input_frame)
 
 
 def send_message(name, delay=12):
-    # SEND_MESSAGE sends a message to a single user
-    address_box = driver.find_elements(By.CLASS_NAME, 'ui_v5-input-component')
-    address_box[3].clear()
-    address_box[3].send_keys(name)
-    name_popup = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CLASS_NAME, 'username-search-autocomplete-field')))
-    name_popup.click()
-    time.sleep(1)
+    # SEND_MESSAGE defines the message sequence
     try:
-        # Message sequence
         driver.switch_to.frame('mce_0_ifr')  # Switch frames for rich text editor
         # MESSAGE SEQUENCE HERE
         insert_image('https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/Kookaburrra/phpeGUx85.gif')
@@ -118,6 +120,7 @@ if __name__ == '__main__':
     login()
     print('Logged in.')
     time.sleep(1)
+
     # Wait for page to load before sending messages
     print('Loading message page...')
     while driver.find_elements(By.CLASS_NAME, 'loader-progress-bar-component'):
@@ -128,6 +131,7 @@ if __name__ == '__main__':
     blocked_users = []
     n = 1
     for name in list_of_names:
+        fill_recipient(name)
         send_message(name, delay=12)
         new_message()
         n += 1
