@@ -31,8 +31,12 @@ else:
     list_of_names = []
 N = len(list_of_names)
 
+# Initiate driver and user agent
 options = Options()
-options.add_argument('user-agent=TA')
+options.add_argument(
+    'user-agent=TeamAustraliaAdminScripts '
+    'Contact me at aidan.cash93@gmail.com'
+)
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 driver.get('https://www.chess.com/messages/compose')
 
