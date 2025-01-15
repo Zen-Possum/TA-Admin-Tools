@@ -1,5 +1,5 @@
 # ======================================================================================================================
-# FilterMembers.py provides a set of useful functions for filtering or identifying chess.com club members which meet
+# FilterFunctions.py provides a set of useful functions for filtering or identifying chess.com club members which meet
 # certain criteria including rating, flag, obscene profiles or timeout percentages. Written by ZenPossum :)
 # ======================================================================================================================
 
@@ -8,7 +8,7 @@ import json
 import pandas as pd
 import profanity_check
 
-# Set the club URL suffix and the rate limit delay here
+# Parameters
 club_name = 'team-australia'
 delay = 0
 recoded = {'Bullet': 'chess_bullet', 'Blitz': 'chess_blitz', 'Rapid': 'chess_rapid',
@@ -22,10 +22,12 @@ client.Client.request_config['headers']['User-Agent'] = (
 
 
 def pretty_print(dictionary):
+    # PRETTY_PRINT prints a dictionary/JSON with newlines and indents
     print(json.dumps(dictionary, indent=2))
 
 
 def get_all_members(club):
+    # GET_ALL_MEMBERS returns a  list of all members' usernames in a club
     all_members_raw = get_club_members(club, tts=delay).json['members']
     all_members = []
     for category in ['weekly', 'monthly', 'all_time']:
@@ -91,7 +93,3 @@ def filter_timeout_percentage(members, format, above=25, to_csv=False):
         pd.DataFrame(filtered_members.items(), columns=['name', 'timeout_percentage'])\
             .to_csv('filtered_timeout.csv', index=False)
     return filtered_members
-
-
-# print(get_player_profile('zenpossum').json['player'])
-# print(get_player_stats('zenpossum').json['stats'])

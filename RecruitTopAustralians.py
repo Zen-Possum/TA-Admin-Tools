@@ -1,5 +1,10 @@
+# ======================================================================================================================
+# RecruitTopAustralians.py messages the highest-rated Australians not currently in Team Australia.
+# Written by ZenPossum :)
+# ======================================================================================================================
+
 from chessdotcom import client, get_country_players
-from FilterMembers import get_all_members
+from FilterFunctions import get_all_members
 
 # Parameters
 country_code = 'AU'

@@ -7,8 +7,9 @@ from chessdotcom import client
 from collections import Counter
 import pandas as pd
 from datetime import date
-from FilterMembers import get_all_members
+from FilterFunctions import get_all_members
 
+# Parameters
 all_clubs = [
         'team-australia-adelaide-sa',
         'team-australia-brisbane-qld',

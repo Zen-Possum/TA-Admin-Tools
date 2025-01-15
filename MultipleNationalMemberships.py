@@ -6,11 +6,12 @@
 from chessdotcom import client
 import pandas as pd
 from datetime import date
-from FilterMembers import get_all_members
+from FilterFunctions import get_all_members
 from selenium import webdriver
-from Credentials import username, password, driver_path
+from Credentials import username, password
 import time
 
+# Parameters
 home_club = 'team-australia'
 url_to_scrape = 'https://www.chess.com/clubs/forum/view/wl2023-teams-and-representatives'
 login_url = f'https://www.chess.com/login_and_go?returnUrl={url_to_scrape}'

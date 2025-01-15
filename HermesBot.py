@@ -1,6 +1,6 @@
 # ======================================================================================================================
 # HermesBot.py automates sending the same message to multiple users on chess.com, which can be specified in list or CSV
-# format. It requires an up-to-date chrome driver (https://chromedriver.chromium.org/downloads) and valid chess.com
+# format. It requires an up-to-date chrome driver (https://chromedriver.chromium.org/downloads) and valid Chess.com
 # login credentials. Written by ZenPossum :)
 # ======================================================================================================================
 
@@ -46,6 +46,7 @@ def login():
 
 
 def fill_recipient(name):
+    # FILL_RECIPIENT fills the message recipient box with a given username
     address_box = driver.find_elements(By.CLASS_NAME, 'ui_v5-input-component')
     address_box[3].clear()
     address_box[3].send_keys(name)
