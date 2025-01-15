@@ -9,3 +9,5 @@ offenders-2024-08-26.csv
 TestHists.py
 /Sandbox.py
 *.csv
+TestGoogleSheets.py
+TestGUI.py

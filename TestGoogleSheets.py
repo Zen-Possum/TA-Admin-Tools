@@ -1,3 +1,5 @@
+import gspread
+
 credentials_path = r'C:\Users\aidan\PycharmProjects\RandomProjects2\TAModBot\team-australia-admin-db24c213971f.json'
 # scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 # credentials = ServiceAccountCredentials.from_json_keyfile_name(credentials_path, scope)
