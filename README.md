@@ -1,12 +1,9 @@
-# TA-Mod-Bot
-A collection of Python scripts to moderate Team Australia on chess.com.
+# TA-Admin-Tools
+A collection of Python scripts to assist admins in moderating Team Australia on chess.com.
 
 **TODO**
-* Clean up earlier files
-* HermesBot
-  * Update
-  * Make compatible with bold, italics and images
+* Expand HermesBot
   * Implement a GUI
   * Randomness and variable clearing
 * Integrate with Google Sheets
-* Write a script to find members in multiple state clubs
+* Fully automate a match monitor program
