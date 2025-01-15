@@ -7,5 +7,4 @@ A collection of Python scripts to assist admins in moderating Team Australia on 
 * Fully automate a match monitor program
 * Add database compatibility with `RuleViolationChecker.py`
 * Add optional requirement to have a daily game in FilterForMatchMessaging
-* Update selenium and chessdotcom syntax in `MultipleNationalMemberships.py` and `MultipleStateMemberships.py`
 * Write `RecruitTopAustralians.py`
