@@ -1,9 +1,6 @@
 Credentials.py
 __pycache__/Credentials.cpython-39.pyc
 Sandbox.py
-TestHists.py
-TestGoogleSheets.py
-TestGUI.py
 *.csv
 *.json
 /Archive
