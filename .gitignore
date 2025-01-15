@@ -6,3 +6,4 @@ TestGoogleSheets.py
 TestGUI.py
 *.csv
 *.json
+/Archive
