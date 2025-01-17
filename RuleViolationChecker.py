@@ -12,7 +12,9 @@ import profanity_check
 
 # Parameters
 home_club = 'team-australia'
-file_name = f'offenders-{date.today()}.csv'
+file_name = f'rule-violations-{date.today()}.csv'
+use_database = True  # Download a database of club members using DownloadClubDatabase.py first for speed
+database_file_name = 'team-australia-2025-01-15.csv'
 delay = 0
 
 # Set up user agent
@@ -28,46 +30,71 @@ N = len(club_members)
 n = 1
 last_time = time.time()
 
-# Iterate through club members
-for member in club_members:
-    if n % 50 == 0:
-        # Display progress and estimated time remaining in loop
-        current_time = time.time()
-        estimated_time_remaining = round((N - n) * (current_time - last_time) / 50 / 60)
-        last_time = current_time
-        print(f'Processing member {n} of {N}. Estimated time remaining: '
-              f'{pd.Timedelta(estimated_time_remaining, "min").round(freq="s")}.')
+if use_database:
+    # Iterate through club members in existing database
+    df = pd.read_csv(database_file_name)
+    for index, row in df.iterrows():
+        member = row['username']
+        country_code = row['country']
 
-    # Check for non-AU flag
-    profile = get_player_profile(member, tts=delay)
-    country_code = profile.json['player']['country'].split('/')[-1]
-    if country_code != 'AU':
-        df_to_add = pd.DataFrame({'username': [member],
-                                  'reason': ['flag'],
-                                  'country': [country_code],
-                                  'profanity': [''],
-                                  'link': [f'https://www.chess.com/member/{member}']})
-        filtered_members = pd.concat([filtered_members, df_to_add], ignore_index=True)
+        # Check for non-AU flag
+        if country_code != 'AU':
+            df_to_add = pd.DataFrame({'username': [member],
+                                      'reason': ['flag'],
+                                      'country': [country_code],
+                                      'profanity': [''],
+                                      'link': [f'https://www.chess.com/member/{member}']})
+            filtered_members = pd.concat([filtered_members, df_to_add], ignore_index=True)
 
-    # Check for profanity
-    profile_fields = profile.json['player']
-    for field in ['username', 'name', 'location']:
-        try:
-            if profanity_check.predict([profile_fields[field]]):
+        # Check for profanity
+        for field in ['username', 'name', 'location']:
+            if pd.notna(row[field]) and profanity_check.predict([row[field]]):
                 df_to_add = pd.DataFrame({'username': [member],
                                           'reason': [f'profanity in {field}'],
                                           'country': [''],
-                                          'profanity': [profile_fields[field]],
+                                          'profanity': [row[field]],
                                           'link': [f'https://www.chess.com/member/{member}']})
                 filtered_members = pd.concat([filtered_members, df_to_add], ignore_index=True)
                 break
-        except KeyError:
-            continue
-    n += 1
+
+else:
+    # Iterate through club members using the API
+    for member in club_members:
+        if n % 50 == 0:
+            # Display progress and estimated time remaining in loop
+            current_time = time.time()
+            estimated_time_remaining = round((N - n) * (current_time - last_time) / 50 / 60)
+            last_time = current_time
+            print(f'Processing member {n} of {N}. Estimated time remaining: '
+                  f'{pd.Timedelta(estimated_time_remaining, "min").round(freq="s")}.')
+
+        # Check for non-AU flag
+        profile = get_player_profile(member, tts=delay)
+        country_code = profile.json['player']['country'].split('/')[-1]
+        if country_code != 'AU':
+            df_to_add = pd.DataFrame({'username': [member],
+                                      'reason': ['flag'],
+                                      'country': [country_code],
+                                      'profanity': [''],
+                                      'link': [f'https://www.chess.com/member/{member}']})
+            filtered_members = pd.concat([filtered_members, df_to_add], ignore_index=True)
+
+        # Check for profanity
+        profile_fields = profile.json['player']
+        for field in ['username', 'name', 'location']:
+            try:
+                if profanity_check.predict([profile_fields[field]]):
+                    df_to_add = pd.DataFrame({'username': [member],
+                                              'reason': [f'profanity in {field}'],
+                                              'country': [''],
+                                              'profanity': [profile_fields[field]],
+                                              'link': [f'https://www.chess.com/member/{member}']})
+                    filtered_members = pd.concat([filtered_members, df_to_add], ignore_index=True)
+                    break
+            except KeyError:
+                continue
+        n += 1
 
 # Sort and save as a CSV file
 filtered_members = filtered_members.sort_values('reason')
 filtered_members.to_csv(file_name, index=False)
-
-# TODO: find a better profanity checker
-# TODO: swap API requests for database search
