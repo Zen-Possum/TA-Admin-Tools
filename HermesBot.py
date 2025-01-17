@@ -38,15 +38,23 @@ options.add_argument(
     'Contact me at aidan.cash93@gmail.com'
 )
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-driver.get('https://www.chess.com/messages/compose')
 
 
 def login():
     # LOGIN logs in using the given credentials
+    driver.get('https://www.chess.com/messages/compose')
+    time.sleep(1)
     login_boxes = driver.find_elements(By.CLASS_NAME, 'cc-input-component')
     login_boxes[1].send_keys(username)
     login_boxes[2].send_keys(password)
     driver.find_element(By.ID, 'login').click()
+    print('Logged in. Loading message page...')
+
+    # Wait for page to load before sending messages
+    time.sleep(1)
+    while driver.find_elements(By.CLASS_NAME, 'loader-progress-bar-component'):
+        time.sleep(1)
+    print('Message page loaded. Commencing messaging.')
 
 
 def fill_recipient(name):
@@ -106,7 +114,7 @@ def send_message(name, delay=12):
                          'league!\nhttps://www.chess.com/club/matches/team-australia/1723007')
         driver.switch_to.default_content()  # Switch back
         driver.find_element(By.ID, 'message-submit').click()  # Send message
-        print(f'Sent message to {name} ({n} of {N})')
+        print(f'Sent message to {name} ({n} of {N}).')
         time.sleep(delay)
     except [common.exceptions.ElementNotInteractableException, common.exceptions.NoSuchElementException]:
         # If user cannot be messaged
@@ -123,14 +131,6 @@ def new_message():
 if __name__ == '__main__':
     # Log in to the messaging portal
     login()
-    print('Logged in.')
-    time.sleep(1)
-
-    # Wait for page to load before sending messages
-    print('Loading message page...')
-    while driver.find_elements(By.CLASS_NAME, 'loader-progress-bar-component'):
-        time.sleep(1)
-    print('Message page loaded. Commencing messaging.')
 
     # Iterate through the names provided
     blocked_users = []
