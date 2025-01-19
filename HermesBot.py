@@ -40,6 +40,11 @@ options.add_argument(
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 
+def set_driver(custom_driver):
+    global driver
+    driver = custom_driver
+
+
 def login():
     # LOGIN logs in using the given credentials
     driver.get('https://www.chess.com/messages/compose')
@@ -70,6 +75,7 @@ def fill_recipient(name):
 
 def write_plain_text(text):
     # WRITE_PLAIN_TEXT writes plain text to the message box
+    global driver
     driver.find_element(By.ID, 'tinymce').send_keys(text)
 
 
@@ -89,6 +95,7 @@ def write_italics_text(text):
 
 def insert_image(url):
     # INSERT_IMAGE inserts the image with the given address into the message
+    global driver
     driver.switch_to.default_content()  # Switch back to default frame
     driver.find_element(By.XPATH, '//button[@title="Insert Image"]').click()
     time.sleep(1)
