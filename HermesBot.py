@@ -47,6 +47,7 @@ def set_driver(custom_driver):
 
 def login():
     # LOGIN logs in using the given credentials
+    global driver
     driver.get('https://www.chess.com/messages/compose')
     time.sleep(1)
     login_boxes = driver.find_elements(By.CLASS_NAME, 'cc-input-component')
@@ -64,6 +65,7 @@ def login():
 
 def fill_recipient(name):
     # FILL_RECIPIENT fills the message recipient box with a given username
+    global driver
     address_box = driver.find_elements(By.CLASS_NAME, 'ui_v5-input-component')
     address_box[3].clear()
     address_box[3].send_keys(name)
@@ -81,6 +83,7 @@ def write_plain_text(text):
 
 def write_bold_text(text):
     # WRITE_PLAIN_TEXT writes bold text to the message box
+    global driver
     driver.find_element(By.ID, 'tinymce').send_keys(Keys.CONTROL + 'b')
     driver.find_element(By.ID, 'tinymce').send_keys(text)
     driver.find_element(By.ID, 'tinymce').send_keys(Keys.CONTROL + 'b')
@@ -88,6 +91,7 @@ def write_bold_text(text):
 
 def write_italics_text(text):
     # WRITE_PLAIN_TEXT writes italics text to the message box
+    global driver
     driver.find_element(By.ID, 'tinymce').send_keys(Keys.CONTROL + 'i')
     driver.find_element(By.ID, 'tinymce').send_keys(text)
     driver.find_element(By.ID, 'tinymce').send_keys(Keys.CONTROL + 'i')
@@ -127,6 +131,7 @@ def change_font_size(size):
 
 def send_message(name, delay=12):
     # SEND_MESSAGE defines the message sequence
+    global driver
     try:
         driver.switch_to.frame('mce_0_ifr')  # Switch frames for rich text editor
         # MESSAGE SEQUENCE HERE
@@ -146,6 +151,7 @@ def send_message(name, delay=12):
 
 def new_message():
     # NEW_MESSAGE prepares the page to compose a new message
+    global driver
     driver.find_element(By.CLASS_NAME, 'message-list-search-compose').click()
     time.sleep(1)
 
