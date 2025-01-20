@@ -3,19 +3,7 @@
 # driver (https://chromedriver.chromium.org/downloads) and valid Chess.com login credentials. Written by ZenPossum :)
 # ======================================================================================================================
 
-from selenium import common
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
-from webdriver_manager.chrome import ChromeDriverManager
-import time
-import pandas as pd
-from Credentials import username, password
-from HermesBot import set_driver, insert_image, write_plain_text, write_bold_text
+from HermesBot import *
 
 options = Options()
 options.add_argument(
@@ -60,15 +48,16 @@ def vote_now(game_id, moves):
     time.sleep(5)
     driver.switch_to.frame('mce_0_ifr')  # Switch frames for rich text editor
     insert_image('https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/ZenPossum/php6Kg5Xp.png')
-    write_plain_text('New to vote chess? Read the guidelines here.\n'  # TODO: change to Shift + Enter
-                     'https://www.chess.com/clubs/forum/view/team-australia-vote-chess-guidelines-1 ')
-    # TODO: Go back to after image
-    # TODO: change_font_size(36)
+    write_plain_text('New to vote chess? Read the guidelines here.')
+    shift_enter()
+    write_plain_text('https://www.chess.com/clubs/forum/view/team-australia-vote-chess-guidelines-1 ')
+    driver.find_element(By.ID, 'tinymce').send_keys(Keys.ARROW_LEFT*124)
+    change_font_size(36)
     write_bold_text(moves.pop(0))
     for move in moves:
         write_plain_text(' or ')
         write_bold_text(move)
-
+    shift_enter()
     driver.switch_to.default_content()  # Switch back
     driver.find_element(By.ID, 'message-submit').click()  # Post message
 
@@ -77,4 +66,4 @@ if __name__ == '__main__':
     deutsch = 311723
     spain = 325815
     turk = 334523
-    dont_vote_yet(deutsch)
+    vote_now(deutsch, [''])

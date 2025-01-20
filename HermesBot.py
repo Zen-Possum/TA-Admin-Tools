@@ -37,10 +37,10 @@ options.add_argument(
     'user-agent=TeamAustraliaAdminScripts '
     'Contact me at aidan.cash93@gmail.com'
 )
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 
 def set_driver(custom_driver):
+    # SET_DRIVER sets a global driver
     global driver
     driver = custom_driver
 
@@ -110,6 +110,21 @@ def insert_image(url):
     driver.switch_to.frame(text_input_frame)
 
 
+def shift_enter():
+    # SHIFT_ENTER inserts a linebreak without paragraph spacing
+    global driver
+    driver.find_element(By.ID, 'tinymce').send_keys(Keys.SHIFT + Keys.ENTER)
+
+
+def change_font_size(size):
+    # CHANGE_FONT_SIZE changes the text size to one of the presets (8, 10, 11, 12, 14, 18, 24, 36)
+    global driver
+    driver.switch_to.default_content()  # Switch back to default frame
+    driver.find_element(By.XPATH, '//button[@title="Font sizes"]').click()
+    driver.find_element(By.XPATH, f'//div[@title="{size}px"]').click()
+    driver.switch_to.frame('mce_0_ifr')
+
+
 def send_message(name, delay=12):
     # SEND_MESSAGE defines the message sequence
     try:
@@ -137,6 +152,8 @@ def new_message():
 
 if __name__ == '__main__':
     # Log in to the messaging portal
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    set_driver(driver)
     login()
 
     # Iterate through the names provided
