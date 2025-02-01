@@ -31,6 +31,7 @@ def dont_vote_yet(game_id):
                      'https://www.chess.com/clubs/forum/view/team-australia-vote-chess-guidelines-1 ')
     driver.switch_to.default_content()  # Switch back
     driver.find_element(By.ID, 'message-submit').click()  # Post message
+    driver.close()
 
 
 def vote_now(game_id, moves):
@@ -57,13 +58,17 @@ def vote_now(game_id, moves):
     for move in moves:
         write_plain_text(' or ')
         write_bold_text(move)
-    shift_enter()
+    write_plain_text('\n')
     driver.switch_to.default_content()  # Switch back
     driver.find_element(By.ID, 'message-submit').click()  # Post message
+    driver.close()
 
 
 if __name__ == '__main__':
+    # Game codes
     deutsch = 311723
     spain = 325815
     turk = 334523
-    vote_now(deutsch, [''])
+
+    vote_now(spain, ['h4', 'Be2'])
+    vote_now(turk, ['Nc6', 'd6', 'e6'])
