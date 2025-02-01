@@ -3,6 +3,7 @@
 # driver (https://chromedriver.chromium.org/downloads) and valid Chess.com login credentials. Written by ZenPossum :)
 # ======================================================================================================================
 
+import re
 from HermesBot import *
 
 options = Options()
@@ -66,9 +67,80 @@ def vote_now(game_id, moves):
 
 if __name__ == '__main__':
     # Game codes
-    deutsch = 311723
-    spain = 325815
-    turk = 334523
+    game_codes = {
+        'Deutsch': 311723,
+        'Spain': 325815,
+        'Turk': 334523
+    }
+    games = list(game_codes.keys())
+    N = len(games)
 
-    vote_now(spain, ['h4', 'Be2'])
-    vote_now(turk, ['Nc6', 'd6', 'e6'])
+    # Input loop
+    print('Welcome to the Vote Captain Assistant.')
+    while True:
+        # Select message to post
+        message_selection = input('Please select a message:\n'
+                                  '[1]  Don\'t vote yet\n'
+                                  '[2]  Vote now\n'
+                                  '[3]  End program\n')
+        message_selection = message_selection.strip(' \n[]').lower()
+
+        if message_selection in ['1', 'd', '2', 'v']:
+            # Select game to post in
+            game_selection = input('Please select a game:\n' +
+                                   ''.join([f'[{n}]  {games[n]}\n' for n in range(N)]) +
+                                   f'[{N}]  Enter game code manually\n')
+            game_selection = game_selection.strip(' \n[]').capitalize()
+
+            # Validate game selection
+            if game_selection in [str(N), 'E']:
+                # If user wants to enter game code manually
+                try:
+                    code = int(input('Please enter the game code (https://www.chess.com/votechess/game/######):\n')
+                               .strip())
+                except ValueError:
+                    print('Invalid selection.')
+                    time.sleep(1)
+                    continue
+            elif game_selection in games:
+                # If user provides the game name directly
+                code = game_codes[game_selection]
+            else:
+                try:
+                    # If user provides the selection number
+                    code = game_codes[games[int(game_selection)]]
+                except (ValueError, TypeError, IndexError):
+                    print('Invalid selection.')
+                    time.sleep(1)
+                    continue
+
+            if message_selection in ['1', 'd']:
+                # Don't vote yet
+                print(f'dont_vote_yet({code})')
+                print(f'"Don\'t vote yet" message posted for game {code}')
+            elif message_selection in ['2', 'v']:
+                # Vote now
+                moves_selection = input('Please enter the authorised moves, separated by commas (e.g. O-O, Nxf7+):\n')
+                moves_selection = [m.strip() for m in moves_selection.split(',')]
+                # Validate move
+                all_valid = True
+                pattern = re.compile(
+                    r'^([PNBRQK]?[a-h]?[1-8]?[xX-]?[a-h][1-8](=[NBRQ]| ?e\.p\.)?|^O-O(?:-O)?)[+#$]?$'
+                )
+                for move in moves_selection:
+                    if not bool(pattern.match(move)):
+                        print(f'{move} is not a valid move in algebraic notation.')
+                        all_valid = False
+                if not all_valid:
+                    time.sleep(1)
+                    continue
+
+                print(f'vote_now({code}, {moves_selection})')
+                print(f'"Vote now" message posted for game {code} with moves {moves_selection}')
+        elif message_selection in ['3', 'e']:
+            print('Ending program')
+            quit()
+        else:
+            print('Invalid selection.')
+            time.sleep(1)
+            continue
