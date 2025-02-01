@@ -47,6 +47,7 @@ link_elements.pop()
 links = [link.get_attribute('href') for link in link_elements]
 international_clubs = set([link.split('/')[-1] for link in links if link.startswith('https://www.chess.com/club/')])
 international_clubs.remove(home_club)
+driver.close()
 
 # Get lists of members for all clubs of interest
 au_members = set(get_all_members(home_club))  # Members of home club
