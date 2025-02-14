@@ -6,11 +6,15 @@
 import re
 from HermesBot import *
 
+# Options for chromedriver
+headless = True
 options = Options()
 options.add_argument(
     'user-agent=TeamAustraliaAdminScripts '
     'Contact me at aidan.cash93@gmail.com'
 )
+if headless:
+    options.add_argument("--headless=new")
 
 
 def dont_vote_yet(game_id):
@@ -55,8 +59,8 @@ def vote_now(game_id, moves):
     write_plain_text('https://www.chess.com/clubs/forum/view/team-australia-vote-chess-guidelines-1 ')
     driver.find_element(By.ID, 'tinymce').send_keys(Keys.ARROW_LEFT*124)
     change_font_size(36)
-    write_bold_text(moves.pop(0))
-    for move in moves:
+    write_bold_text(moves[0])
+    for move in moves[1:]:
         write_plain_text(' or ')
         write_bold_text(move)
     write_plain_text('\n')
@@ -65,12 +69,32 @@ def vote_now(game_id, moves):
     driver.close()
 
 
+def good_game(game_id):
+    # GOOD_GAME logs in and posts a 'good game' image
+    url = f'https://www.chess.com/votechess/game/{game_id}'
+    login_url = f'https://www.chess.com/login_and_go?returnUrl={url}'
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    set_driver(driver)
+    driver.get(login_url)
+    time.sleep(1)
+    login_boxes = driver.find_elements(By.CLASS_NAME, 'cc-input-component')
+    login_boxes[1].send_keys(username)
+    login_boxes[2].send_keys(password)
+    driver.find_element(By.ID, 'login').click()
+    time.sleep(5)
+    driver.switch_to.frame('mce_0_ifr')  # Switch frames for rich text editor
+    insert_image('https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/ZenPossum/php6f9fvn.png')
+    driver.switch_to.default_content()  # Switch back
+    driver.find_element(By.ID, 'message-submit').click()  # Post message
+    driver.close()
+
+
 if __name__ == '__main__':
     # Game codes
     game_codes = {
-        'Deutsch': 311723,
         'Spain': 325815,
-        'Turk': 334523
+        'Turk': 334523,
+        'USA': 327909
     }
     games = list(game_codes.keys())
     N = len(games)
@@ -82,10 +106,11 @@ if __name__ == '__main__':
         message_selection = input('Please select a message:\n'
                                   '[1]  Don\'t vote yet\n'
                                   '[2]  Vote now\n'
-                                  '[3]  End program\n')
+                                  '[3]  Good game\n'
+                                  '[4]  End program\n')
         message_selection = message_selection.strip(' \n[]').lower()
 
-        if message_selection in ['1', 'd', '2', 'v']:
+        if message_selection in ['1', 'd', '2', 'v', '3', 'g']:
             # Select game to post in
             game_selection = input('Please select a game:\n' +
                                    ''.join([f'[{n}]  {games[n]}\n' for n in range(N)]) +
@@ -116,7 +141,7 @@ if __name__ == '__main__':
 
             if message_selection in ['1', 'd']:
                 # Don't vote yet
-                print(f'dont_vote_yet({code})')
+                dont_vote_yet(code)
                 print(f'"Don\'t vote yet" message posted for game {code}')
             elif message_selection in ['2', 'v']:
                 # Vote now
@@ -134,10 +159,13 @@ if __name__ == '__main__':
                 if not all_valid:
                     time.sleep(1)
                     continue
-
-                print(f'vote_now({code}, {moves_selection})')
+                vote_now(code, moves_selection)
                 print(f'"Vote now" message posted for game {code} with moves {moves_selection}')
-        elif message_selection in ['3', 'e']:
+            elif message_selection in ['3', 'g']:
+                # Good game
+                good_game(code)
+                print(f'"Good game" message posted for game {code}')
+        elif message_selection in ['4', 'e']:
             print('Ending program')
             quit()
         else:
