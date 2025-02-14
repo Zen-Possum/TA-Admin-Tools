@@ -23,7 +23,7 @@ from Credentials import username, password
 # password = 'PASSWORD_HERE'
 
 # 2. Input the list of users to send the message to here, either using a CSV with a 'username' column or manually
-file_name = ''  # 'FILE_NAME_HERE.csv'. Leave as '' or None to use the manual list
+file_name = 'FilteredMembers1723007.csv'  # 'FILE_NAME_HERE.csv'. Leave as '' or None to use the manual list
 if file_name:
     df = pd.read_csv(file_name)
     list_of_names = list(df['username'])
@@ -66,9 +66,9 @@ def login():
 def fill_recipient(name):
     # FILL_RECIPIENT fills the message recipient box with a given username
     global driver
-    address_box = driver.find_elements(By.CLASS_NAME, 'ui_v5-input-component')
-    address_box[3].clear()
-    address_box[3].send_keys(name)
+    address_box = driver.find_element(By.ID, 'search-member')
+    address_box.clear()
+    address_box.send_keys(name)
     name_popup = WebDriverWait(driver, 10).until(
         ec.presence_of_element_located((By.CLASS_NAME, 'username-search-autocomplete-field')))
     name_popup.click()
@@ -135,15 +135,15 @@ def send_message(name, delay=12):
     try:
         driver.switch_to.frame('mce_0_ifr')  # Switch frames for rich text editor
         # MESSAGE SEQUENCE HERE
-        insert_image('https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/Kookaburrra/phpeGUx85.gif')
-        write_bold_text('\nTeam Australia World League Round 1 2025 against the Czech Republic.')
+        insert_image('https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/Kookaburrra/phpewXgKK.jpg')
+        write_bold_text('\nRepresent Australia in our World League match against Germany!')
         write_plain_text('\nWe need everyone available to play. This is our most important '
-                         'league!\nhttps://www.chess.com/club/matches/team-australia/1723007')
+                         'league!\nhttps://www.chess.com/club/matches/team-australia/1737599')
         driver.switch_to.default_content()  # Switch back
         driver.find_element(By.ID, 'message-submit').click()  # Send message
         print(f'Sent message to {name} ({n} of {N}).')
         time.sleep(delay)
-    except [common.exceptions.ElementNotInteractableException, common.exceptions.NoSuchElementException]:
+    except (common.exceptions.ElementNotInteractableException, common.exceptions.NoSuchElementException):
         # If user cannot be messaged
         print(f'Unable to message {name} ({n} of {N}).')
         blocked_users.append(name)
@@ -167,7 +167,7 @@ if __name__ == '__main__':
     n = 1
     for name in list_of_names:
         fill_recipient(name)
-        send_message(name, delay=12)
+        send_message(name, delay=3600/50-2)
         new_message()
         n += 1
 
