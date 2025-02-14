@@ -16,10 +16,11 @@ from FilterFunctions import get_all_members
 club = 'team-australia'
 delay = 0
 match_id = 1723007  # Find this at the end of the match URL
-min_rating = 1480
-max_rating = 1577
+min_rating = 1000
+max_rating = 1264
 max_timeout_percent = 25
 max_days_since_online = 3
+csv_name = f'FilteredMembers{match_id}.csv'
 
 # Set up user agent
 client.Client.request_config['headers']['User-Agent'] = (
@@ -77,4 +78,4 @@ except:
 
 # Sort and save CSV file
 filtered_members = filtered_members.sort_values('rating', ascending=False)
-filtered_members.to_csv('FilteredMembers2025.csv', index=False)
+filtered_members.to_csv(csv_name, index=False)
