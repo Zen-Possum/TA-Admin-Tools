@@ -14,7 +14,7 @@ import profanity_check
 home_club = 'team-australia'
 file_name = f'rule-violations-{date.today()}.csv'
 use_database = True  # Download a database of club members using DownloadClubDatabase.py first for speed
-database_file_name = 'team-australia-2025-01-15.csv'
+database_file_name = 'team-australia-2025-02-01.csv'
 delay = 0
 
 # Set up user agent
