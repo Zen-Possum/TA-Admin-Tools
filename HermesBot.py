@@ -23,7 +23,7 @@ from Credentials import username, password
 # password = 'PASSWORD_HERE'
 
 # 2. Input the list of users to send the message to here, either using a CSV with a 'username' column or manually
-file_name = 'FilteredMembers1723007.csv'  # 'FILE_NAME_HERE.csv'. Leave as '' or None to use the manual list
+file_name = 'FilteredMembers1765179.csv'  # 'FILE_NAME_HERE.csv'. Leave as '' or None to use the manual list
 if file_name:
     df = pd.read_csv(file_name)
     list_of_names = list(df['username'])
@@ -135,10 +135,10 @@ def send_message(name, delay=12):
     try:
         driver.switch_to.frame('mce_0_ifr')  # Switch frames for rich text editor
         # MESSAGE SEQUENCE HERE
-        insert_image('https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/Kookaburrra/phpewXgKK.jpg')
-        write_bold_text('\nRepresent Australia in our World League match against Germany!')
-        write_plain_text('\nWe need everyone available to play. This is our most important '
-                         'league!\nhttps://www.chess.com/club/matches/team-australia/1737599')
+        insert_image('https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/Kookaburrra/phpiXuBFj.gif')
+        write_bold_text('\nNew World League match: Australia vs Italy!')
+        write_plain_text('\nPlease join this important match:\nhttps://www.chess.com/club/matches/team-australia'
+                         '/1765179 ')
         driver.switch_to.default_content()  # Switch back
         driver.find_element(By.ID, 'message-submit').click()  # Send message
         print(f'Sent message to {name} ({n} of {N}).')

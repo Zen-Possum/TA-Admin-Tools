@@ -15,9 +15,9 @@ from FilterFunctions import get_all_members
 # Parameters
 club = 'team-australia'
 delay = 0
-match_id = 1723007  # Find this at the end of the match URL
-min_rating = 1000
-max_rating = 1264
+match_id = 1765179  # Find this at the end of the match URL
+min_rating = 1420
+max_rating = 1529
 max_timeout_percent = 25
 max_days_since_online = 3
 csv_name = f'FilteredMembers{match_id}.csv'
