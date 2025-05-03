@@ -23,7 +23,7 @@ from Credentials import username, password
 # password = 'PASSWORD_HERE'
 
 # 2. Input the list of users to send the message to here, either using a CSV with a 'username' column or manually
-file_name = 'FilteredMembers1765179.csv'  # 'FILE_NAME_HERE.csv'. Leave as '' or None to use the manual list
+file_name = 'Data/FilteredMembers1765179.csv'  # 'FILE_NAME_HERE.csv'. Leave as '' or None to use the manual list
 if file_name:
     df = pd.read_csv(file_name)
     list_of_names = list(df['username'])

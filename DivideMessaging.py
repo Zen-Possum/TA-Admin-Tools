@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 
 # Parameters
-file_name = 'FilteredMembersBulgaria.csv'
+file_name = 'Data/FilteredMembersBulgaria.csv'
 admins = ['Louise', 'Bruce', 'Steve', 'Jim', 'Aidan']
 
 # Read file
@@ -20,4 +20,4 @@ filtered_members['link'] = filtered_members['username'].map(lambda x: f'https://
 for i in range(n_folds):
     fold = np.array_split(filtered_members, n_folds)[i]
     # fold = fold_shuffled.sort_values('rating', ascending=False)
-    fold.to_csv(f'Messaging{admins[i]}.csv', index=False)
+    fold.to_csv(f'Data/Messaging{admins[i]}.csv', index=False)

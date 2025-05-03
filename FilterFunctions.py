@@ -46,7 +46,7 @@ def filter_by_rating(members, format, bottom, top, to_csv=False):
         if bottom <= rating <= top:
             filtered_members[member] = rating
     if to_csv:
-        pd.DataFrame(filtered_members.items(), columns=['name', format]).to_csv('filtered_ratings.csv', index=False)
+        pd.DataFrame(filtered_members.items(), columns=['name', format]).to_csv('Data/filtered_ratings.csv', index=False)
     return filtered_members
 
 
@@ -60,7 +60,7 @@ def find_non_au_flags(members, to_csv=False):
         if country_code != 'AU':
             filtered_members[member] = country_code
     if to_csv:
-        pd.DataFrame(filtered_members.items(), columns=['name', 'country']).to_csv('non-au-flags.csv', index=False)
+        pd.DataFrame(filtered_members.items(), columns=['name', 'country']).to_csv('Data/non-au-flags.csv', index=False)
     return filtered_members
 
 
@@ -76,7 +76,7 @@ def find_profanity(members, to_csv=False):
                 filtered_members[member] = profile_fields[field]
                 break
     if to_csv:
-        pd.DataFrame(filtered_members.items(), columns=['name', 'text']).to_csv('profanities.csv', index=False)
+        pd.DataFrame(filtered_members.items(), columns=['name', 'text']).to_csv('Data/profanities.csv', index=False)
     return filtered_members
 
 
@@ -91,5 +91,5 @@ def filter_timeout_percentage(members, format, above=25, to_csv=False):
             filtered_members[member] = percentage
     if to_csv:
         pd.DataFrame(filtered_members.items(), columns=['name', 'timeout_percentage'])\
-            .to_csv('filtered_timeout.csv', index=False)
+            .to_csv('Data/filtered_timeout.csv', index=False)
     return filtered_members

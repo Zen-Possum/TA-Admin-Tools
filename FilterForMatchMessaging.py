@@ -20,7 +20,7 @@ min_rating = 1420
 max_rating = 1529
 max_timeout_percent = 25
 max_days_since_online = 3
-csv_name = f'FilteredMembers{match_id}.csv'
+csv_name = f'Data/FilteredMembers{match_id}.csv'
 
 # Set up user agent
 client.Client.request_config['headers']['User-Agent'] = (

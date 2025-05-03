@@ -20,6 +20,7 @@ home_club = 'team-australia'
 url_to_scrape = 'https://www.chess.com/clubs/forum/view/wl2025-list-of-teams'
 login_url = f'https://www.chess.com/login_and_go?returnUrl={url_to_scrape}'
 delay = 0
+csv_name = f'Data/multiple-national-memberships-{date.today()}.csv'
 
 # Initiate driver and user agent
 client.Client.request_config['headers']['User-Agent'] = (
@@ -77,5 +78,4 @@ for member in duplicates:
 
 # Save to CSV file
 df = df.sort_values('username')
-csv_name = f'multiple-national-memberships-{date.today()}.csv'
 df.to_csv(csv_name, index=False)

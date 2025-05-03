@@ -21,6 +21,7 @@ all_clubs = [
         'team-australia-sydney-nsw'
     ]
 delay = 0
+csv_name = f'Data/multiple-state-memberships-{date.today()}.csv'
 
 # Set up user agent
 client.Client.request_config['headers']['User-Agent'] = (
@@ -60,5 +61,4 @@ for member in duplicates:
 
 # Save to CSV file
 df = df.sort_values('username')
-csv_name = f'multiple-state-memberships-{date.today()}.csv'
 df.to_csv(csv_name, index=False)

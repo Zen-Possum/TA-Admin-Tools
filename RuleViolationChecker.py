@@ -12,10 +12,10 @@ import profanity_check
 
 # Parameters
 home_club = 'team-australia'
-file_name = f'rule-violations-{date.today()}.csv'
-use_database = True  # Download a database of club members using DownloadClubDatabase.py first for speed
-database_file_name = 'team-australia-2025-02-01.csv'
 delay = 0
+file_name = f'Data/rule-violations-{date.today()}.csv'
+database_file_name = f'Data/team-australia-{date.today()}.csv'
+use_database = True  # Download a database of club members using DownloadClubDatabase.py first for speed
 
 # Set up user agent
 client.Client.request_config['headers']['User-Agent'] = (

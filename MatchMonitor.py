@@ -17,7 +17,7 @@ engine_path = 'C:/Users/aidan/Downloads/stockfish/stockfish-windows-x86-64-avx2.
 club = 'team-australia'
 delay = 0
 matches_since = 1726315383
-csv_name = 'match-monitor.csv'
+csv_name = 'Data/match-monitor.csv'
 archive_1 = True  # If you want to save the previous CSV as an archive
 ignore_matches_json_name = 'ignore_matches.json'  # Stores matches to ignore (i.e. finished and checked)
 
@@ -107,7 +107,7 @@ try:
     df = pd.read_csv(csv_name)
     print('Previous database loaded from file')
     if archive_1:
-        df.to_csv('match-monitor-archive.csv', index=False)
+        df.to_csv('Data/match-monitor-archive.csv', index=False)
 except FileNotFoundError:
     # Create a dataframe to store the timeouts and early resignations
     df = pd.DataFrame(columns=['username',
