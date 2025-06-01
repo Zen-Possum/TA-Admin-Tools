@@ -22,7 +22,6 @@ all_clubs = [
 ]
 C = len(all_clubs)
 delay = 0
-csv_name = f'Data/{club}-{date.today()}.csv'
 
 # Set up user agent
 client.Client.request_config['headers']['User-Agent'] = (
@@ -90,6 +89,7 @@ for club in all_clubs:
         n += 1
 
     df = df.sort_values('chess_daily', ascending=False)
+    csv_name = f'Data/{club}-{date.today()}.csv'
     df.to_csv(csv_name, index=False)
     print(f'Program finished for club "{club}" ({c} of {C}). Database saved as {csv_name}.')
     c += 1
