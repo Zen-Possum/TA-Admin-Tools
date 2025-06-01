@@ -15,9 +15,9 @@ from FilterFunctions import get_all_members
 # Parameters
 club = 'team-australia'
 delay = 0
-match_id = 1765179  # Find this at the end of the match URL
-min_rating = 1420
-max_rating = 1529
+match_id = 1780620  # Find this at the end of the match URL
+min_rating = 1400
+max_rating = 1558
 max_timeout_percent = 25
 max_days_since_online = 3
 csv_name = f'Data/FilteredMembers{match_id}.csv'
@@ -50,7 +50,7 @@ try:
     for member in club_members:
         if n % 50 == 0:
             current_time = time.time()
-            estimated_time_remaining = round((N - n) * (current_time - last_time) / 50 / 60)
+            estimated_time_remaining = (N - n) * (current_time - last_time) / 50 / 60
             last_time = current_time
             print(f'Processing member {n} of {N}. Estimated time remaining: '
                   f'{pd.Timedelta(estimated_time_remaining, "min").round(freq="s")}.')
