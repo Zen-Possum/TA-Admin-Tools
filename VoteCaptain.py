@@ -97,6 +97,7 @@ if __name__ == '__main__':
         'Turk': 334523,
         'OCD White': 350229,
         'OCD Black': 350227,
+        'NZ': 357644,
         'USA': 327909,
     }
     games = list(game_codes.keys())
@@ -106,10 +107,12 @@ if __name__ == '__main__':
         # Manual instructions
         # dont_vote_yet(game_codes['Turk'])
         # dont_vote_yet(game_codes['OCD White'])
-        dont_vote_yet(game_codes['OCD Black'])
-        # vote_now(game_codes['Turk'], ['Nxd5'])
-        vote_now(game_codes['OCD White'], ['Bh6'])
-        # vote_now(game_codes['OCD Black'], ['Nf6'])
+        # dont_vote_yet(game_codes['OCD Black'])
+        dont_vote_yet(game_codes['NZ'])
+        # vote_now(game_codes['Turk'], [''])
+        # vote_now(game_codes['OCD White'], [''])
+        # vote_now(game_codes['OCD Black'], ['Qe6'])
+        # vote_now(game_codes['NZ'], ['d4'])
         pass
     elif prompt:
         # Input loop
